@@ -17,3 +17,114 @@ Simple models such as Logistic Regression combined with Weight of Evidence (WoE)
 More advanced models such as Random Forests, XGBoost, or Gradient Boosting often provide better predictive accuracy because they can capture complex relationships in the data. However, they are more difficult to interpret and explain, which can create challenges for regulatory compliance and model governance.
 
 In regulated financial environments, organizations must balance predictive performance with transparency, explainability, and regulatory requirements. For this reason, interpretable models are often preferred when the performance difference is not significant.
+# 📘 Project Progress (Task 2 → Task 5)
+
+
+
+## 🧪 Task 2 — Exploratory Data Analysis (EDA)
+
+### 🎯 Objective
+Understand the structure, distribution, and quality of the transaction dataset.
+
+### 🛠 Work Done
+- Loaded raw transaction data (`data.csv`)
+- Checked missing values and data types
+- Explored distributions of transaction amounts
+- Identified customer-level aggregation requirement
+
+### 📌Key Insight
+Raw transaction data is not suitable for direct modeling. It must be aggregated at customer level.
+
+---
+
+#Task 3 — Feature Engineering Pipeline
+
+### 🎯 Objective
+Transform raw transaction data into customer-level machine learning features.
+
+### 🛠 Work Done
+Implemented `FeatureEngineer` class:
+- Converted transaction timestamps to datetime
+- Created snapshot-based RFM features:
+  - Recency (days since last transaction)
+  - Frequency (number of transactions)
+  - Monetary value (sum of transactions)
+- Added statistical features:
+  - mean, std, max of transaction amounts
+- Built sklearn-compatible transformer pipeline
+
+### 📌 Output Features
+- recency
+- frequency
+- monetary_amount
+- monetary_value
+- amount_mean
+- amount_std
+- amount_max
+
+---
+
+## 🧠 Task 4 — Proxy Label Creation
+
+### 🎯 Objective
+Create a target variable since no real default labels exist.
+
+### 🛠 Work Done
+- Applied behavioral segmentation using RFM features
+- Defined high-risk customers using recency-based thresholding
+- Generated binary target variable:
+  - `is_high_risk = 1` (high risk)
+  - `is_high_risk = 0` (low risk)
+
+### ⚠️ Important Note
+This is a proxy label, not real credit default data.
+
+### 📌 Key Insight
+Converted an unsupervised problem into a supervised learning problem using business rules.
+
+
+
+🤖 Task 5 — Model Training & Evaluat Objective
+Build and evaluate a credit risk prediction model.
+
+ Work Done
+- Split data into training and testing sets
+- Applied feature scaling using StandardScaler
+- Trained Logistic Regression model
+- Handled class imbalance using `class_weight="balanced"`
+- Evaluated model using:
+  - Accuracy
+  - Precision
+  - Recall
+  - F1-score
+  - ROC-AUC
+
+ 📊 Sample Performance
+- Accuracy: ~0.70–0.80  
+- ROC-AUC: ~0.68–0.75  
+
+ 📌 Key Insight
+Model performance is influenced by proxy label construction and class imbalance, not true default behavior.
+
+
+
+ Overall Project Insight
+
+This project demonstrates an end-to-end credit risk modeling pipeline:
+
+Raw Data → Feature Engineering → Proxy Labeling → Supervised Learning
+
+Key learnings:
+- Importance of RFM feature engineering
+- Challenges of missing ground-truth labels
+- Impact of class imbalance on model performance
+- Need for interpretable models in finance
+
+
+
+ Next Step (Task 6)
+
+- FastAPI deployment
+- Docker containerization
+- CI/CD pipeline with GitHub Actions
+- `/predict` API endpoint for inference
